@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { MdCheckBox, MdCheckBoxOutlineBlank } from 'react-icons/md';
-import { relative } from 'path';
 import styles from '../styles/CheckBox.module.scss';
 
 export interface CheckBoxProps {
@@ -21,7 +20,7 @@ const CheckBox = ({
   return (
     <div
       className={className}
-      style={{ textAlign: 'center' }}
+      style={{ textAlign: 'center', cursor: 'pointer' }}
       onClick={() => {
         onChange(!isChecked);
         setIsChecked(!isChecked);

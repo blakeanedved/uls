@@ -7,14 +7,46 @@ const App = () => {
   const suffix = useInput('');
   const url = useInput('');
   const [customSuffix, setCustomSuffix] = useState(true);
-  // TODO implement loading and result display
+  const [status, setStatus] = useState(
+    <p className={styles.Status} style={{ color: 'black' }}>
+      URL Shortener
+    </p>
+  );
 
   const handleSubmit = () => {
+    setStatus(
+      <p className={styles.Status} style={{ color: 'gray' }}>
+        Loading...
+      </p>
+    );
+
     fetch(`https://url-shortener-5a1b1.web.app/createNewLink`, {
+      // fetch(`http://localhost:5000/createNewLink`, {
       method: 'POST',
-      body: JSON.stringify({ path: suffix, url }),
-    }).then((data) => {
-      console.log(data);
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(
+        customSuffix
+          ? { suffix: suffix.value, url: url.value }
+          : { url: url.value, autoSuffix: true }
+      ),
+    }).then((res) => {
+      res.json().then((data) => {
+        if (data.error) {
+          return setStatus(
+            <p className={styles.Status} style={{ color: 'red' }}>
+              {data.error}
+            </p>
+          );
+        }
+
+        setStatus(
+          <p className={styles.Status} style={{ color: 'gray' }}>
+            <a href={data.url}>{data.url}</a> created!
+          </p>
+        );
+      });
     });
 
     suffix.reset();
@@ -27,6 +59,7 @@ const App = () => {
 
   return (
     <div className={styles.Card}>
+      {status}
       <input
         className={styles.Input}
         type="text"
